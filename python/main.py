@@ -1,7 +1,7 @@
 import memcard_driver
 
 def main():
-  driver = memcard_driver.MemCardDriver('COM3')
+  driver = memcard_driver.MemCardDriver('COM5')
   
   while 1:
     packet = driver.Pop()
