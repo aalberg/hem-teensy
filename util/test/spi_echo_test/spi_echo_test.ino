@@ -1,3 +1,5 @@
+// Code for an Arduino Uno used to continuity test the teensy driver.
+// Speed results can be found in the comments with the delays.
 #include <SPI.h>
 
 // Pin constants.
