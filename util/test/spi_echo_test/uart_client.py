@@ -1,3 +1,5 @@
+# Code to read the teensy over uart as fast as possible.
+# Reads all data sent by the teensy and computes the average data rate.
 import binascii
 import serial
 import struct
@@ -30,6 +32,7 @@ def main():
   while 1:
     b = ser.read(1)
     #print len(b), b, type(b), b[0], type(b[0])
+    # Enable/disable ascii mode.
     if b[0] == '\xfe':
       mode = 1
     elif b[0] == '\xff':
