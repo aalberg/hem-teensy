@@ -1,5 +1,7 @@
+// Source: http://www.seanet.com/~karllunt/bareteensy31.html
 /*
- *  uart.c      routines for low-level UART initialization
+ *  uart.c
+ *  routines for low-level UART initialization
  *
  *  This file creates an object module (uart.o) that can be
  *  linked with other object modules, such as a datalogger

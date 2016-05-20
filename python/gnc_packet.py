@@ -1,3 +1,5 @@
+# Packet classes for storing the data from the Wii.
+
 import binascii
 import struct
 import sys
@@ -9,6 +11,7 @@ class PacketType:
   UPDATE = 0x38
   END = 0x39
 
+  # Static functions for verifying the size of a packet is valid for the packet type.
   @staticmethod
   def CheckStartSize(size):
     return size > 4 and size % 4 == 2
@@ -25,6 +28,7 @@ class PacketType:
     END: CheckEndSize,
   }
 
+# Class to hold player parameters.
 class PlayerParams:
   HEADER_SIZE = 2
   SIZE = 4
@@ -42,6 +46,7 @@ class PlayerParams:
   def __repr__(self):
     return self.__str__()
 
+# Class to hold player update structure.
 class PlayerUpdate:
   HEADER_SIZE = 8
   SIZE = 57
@@ -62,6 +67,13 @@ class PlayerUpdate:
   def __repr__(self):
     return self.__str__()
 
+# Class to hold a packet from the wii. There are three types of packets:
+# START: sent on the first frame of a match.
+# UPDATE: sent on all unpaused frames during a match.
+# END: send at the end of a match.
+# As of 5/19/16, packet formats are documented at:
+# http://www.meleeitonme.com/statistics-in-melee-p2/
+# Packet size and checksum are prepended to each packet by the Teensy.
 class Packet:
   HEADER_SIZE = 4
   format_strings = {
@@ -90,16 +102,19 @@ class Packet:
     if not self.ParseData(data):
       self.type = PacketType.INVALID
 
+  # Unpack the packet header into a tuple.
   @staticmethod
   def UnpackHeader(data):
     return struct.unpack(Packet.format_strings["packet_header"], data)
 
+  # Use the PacketType enum to verify the reported type and size of the packet.
   @staticmethod
   def VerifyPacketType(packet_type, size):
     if packet_type not in PacketType.SIZES:
       return False
     return PacketType.SIZES[packet_type].__func__(size)
 
+  # Check simple checksum.
   def CheckChecksum(self, data):
     s = self.type
     for c in data:
@@ -110,6 +125,9 @@ class Packet:
     print len(data)
     return False
 
+  # Parse a packet.
+  # Packets are expanded into tuples using the strings in Packet.format_strings
+  # and are appended to the queue.
   def ParseData(self, data):
     # START packet
     # 2 bytes stage id
@@ -162,6 +180,7 @@ class Packet:
 
     return True
 
+  # Simple string representations.
   def __str__(self):
     if self.type == PacketType.INVALID:
       return "Invalid"
@@ -177,6 +196,8 @@ class Packet:
   def __repr__(self):
     return self.__str__()
 
+# Below this line is tests. To run them run this file as main.
+# ------------------------------------------------------------
 if __name__ == "__main__":
   print "Running gnc_packet.py tests"
   # Test UnpackHeader

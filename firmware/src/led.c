@@ -1,3 +1,5 @@
+// Simple library for using LEDs through GPIO. See header for more information.
+
 #include <string.h>
 
 #include "common.h"
@@ -17,6 +19,7 @@ void InitLeds() {
   GPIOC_PDDR = 1 | (1<<3);
   GPIOD_PDDR = (1<<1) | (1<<2) | (1<<3) | (1<<4);
   
+  // Flash the LEDs once to indicate things are working.
   for (i = 0; i < 6; i ++) {
     LedOn(i);
   }

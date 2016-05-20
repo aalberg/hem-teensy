@@ -1,3 +1,4 @@
+// Source: http://www.seanet.com/~karllunt/bareteensy31.html
 /*
  * File:		arm_cm4.h
  * Purpose:		Definitions common to all ARM Cortex M4 processors

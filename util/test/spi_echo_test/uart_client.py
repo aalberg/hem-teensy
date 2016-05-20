@@ -1,5 +1,6 @@
 # Code to read the teensy over uart as fast as possible.
 # Reads all data sent by the teensy and computes the average data rate.
+
 import binascii
 import serial
 import struct

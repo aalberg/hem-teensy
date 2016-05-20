@@ -1,3 +1,4 @@
+// Source: http://www.seanet.com/~karllunt/bareteensy31.html
 /*
  *  File:        sysinit.c
  *  Purpose:     Kinetis Configuration

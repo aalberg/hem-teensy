@@ -1,3 +1,5 @@
+// Simple SPI driver. See header for more information.
+
 #include "common.h"
 #include "arm_cm4.h"
 #include "spi.h"

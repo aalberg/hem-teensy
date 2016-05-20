@@ -1,5 +1,6 @@
 /*
  *  Teensy31_flash.ld      generic linker script for Teensy 3.1 flash-based projects
+ *  Source: http://www.seanet.com/~karllunt/bareteensy31.html
  */
 
 

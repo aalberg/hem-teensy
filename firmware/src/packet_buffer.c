@@ -1,3 +1,6 @@
+// Library for manipulating a Buffer of packets. See header for more
+// information.
+
 #include "common.h"
 #include "arm_cm4.h"
 

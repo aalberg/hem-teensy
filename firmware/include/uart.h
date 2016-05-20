@@ -1,6 +1,7 @@
+// Source: https://github.com/kcuzner/teensy-oscilloscope/blob/master/scope-teensy/include/uart.h
 /*
- * File:		uart.h
- * Purpose:     Provide common ColdFire UART routines for polled serial IO
+ * File:    uart.h
+ * Purpose: Provide common ColdFire UART routines for polled serial IO
  *
  * Notes:
  * Modified to hide getchar, putchar, and char_avail routines; those now exist

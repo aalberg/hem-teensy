@@ -1,12 +1,18 @@
+# Driver to talk to the Teensy and read all of the packets it sends into a queue.
+# Packet streaming is done in a separate thread.
+# Written for Python 2.7, but may be possible to update to a newer version.
+
 import gnc_packet
 import serial
 import threading
+
 import Queue
 
 class MemCardDriver:
   def __init__(self, port = ''):
     self.queue = Queue.Queue()
     
+    # Connect to serial.
     self.ser = None
     try:
       self.ser = serial.Serial(
@@ -21,10 +27,16 @@ class MemCardDriver:
     except serial.SerialException as e:
       print str(e), self.ser
       return
-      
+    
+    # Start streaming thread.
     self.thread = threading.Thread(target = MemCardDriver.StreamingThread, args = (self,))
     self.thread.start()
-    
+  
+  # Thread to stream packets from the serial port to a queue.
+  # The start of a packet is indicated by two bytes of 0xAA. This should hopefully
+  # let the driver connet after the teensy is already returning data, but this
+  # hasn't been tested. The 0xAA bytes are discarded and are not passed to the Packet
+  # class for parsing.
   def StreamingThread(self):
     while 1:
       # Read byte, compare to 0xAA

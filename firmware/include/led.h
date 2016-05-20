@@ -1,3 +1,8 @@
+// Simple library for using LEDs through GPIO. Pins selected do not interfere
+// with SPI pins.
+// See https://forum.pjrc.com/attachment.php?attachmentid=1847&d=1398128869
+// For details of which physical pin each LED pin maps to.
+
 #ifndef LED_H_
 #define LED_H_
 
