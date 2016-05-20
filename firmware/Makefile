@@ -1,10 +1,8 @@
-# Makefile for teensy projects
+# Makefile for teensy projects.
 #
-# Kevin Cuzner
+# Made by Kevin Cuzner, modified by Alex Alberg.
 #
-# Purpose: To not depend on individual configurations of Code::Blocks for
-# building the project
-#
+# Purpose: To not depend on Arduino dev environment.
 
 PROJECT = hem-teensy
 
