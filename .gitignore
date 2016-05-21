@@ -5,6 +5,7 @@ firmware/bin/hem-teensy.hex
 *.b#[0-9]*
 *.s#[0-9]*
 
+
 # Below be boilerplate
 # Windows image file caches
 Thumbs.db
@@ -81,6 +82,7 @@ Temporary Items
 
 # Executables
 *.exe
+!teensy.exe
 *.out
 *.app
 *.i*86
