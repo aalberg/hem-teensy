@@ -11,6 +11,7 @@ Created by [Alex Alberg](https://github.com/aalberg), based on prior work by [JL
 * A Uart<->Usb cable ($10 from Adafruit)
 * A memory card breakout board (board files included in this repo)
 * A breadboard or another way to prototype a circuit
+* Headers (to solder to the Teensy)
 * Some wires
 
 Other helpful things:
