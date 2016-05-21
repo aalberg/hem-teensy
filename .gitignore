@@ -1,4 +1,9 @@
 documentation
+firmware/bin/hem-teensy.elf
+firmware/bin/hem-teensy.hex
+# Eagle files
+*.b#[0-9]*
+*.s#[0-9]*
 
 # Below be boilerplate
 # Windows image file caches
@@ -57,7 +62,6 @@ Temporary Items
 *.o
 *.ko
 *.obj
-*.elf
 
 # Precompiled Headers
 *.gch
@@ -81,7 +85,6 @@ Temporary Items
 *.app
 *.i*86
 *.x86_64
-*.hex
 
 # Debug files
 *.dSYM/
