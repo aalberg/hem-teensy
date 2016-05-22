@@ -165,8 +165,8 @@
 <wire x1="7" y1="41" x2="7" y2="56" width="0.4064" layer="20"/>
 <wire x1="7" y1="56" x2="25.25" y2="56" width="0.4064" layer="20"/>
 <wire x1="25.25" y1="56" x2="25.25" y2="41" width="0.4064" layer="20"/>
-<text x="26" y="18" size="1.27" layer="21" rot="R90">Designed by Alex Alberg</text>
-<text x="23.5" y="13.5" size="1.27" layer="21" rot="R90">GNC Memory Card Breakout Board</text>
+<text x="12" y="14" size="1.4224" layer="25" font="fixed" rot="R90">GNC Memory Card Breakout</text>
+<text x="23" y="14" size="1.4224" layer="25" font="fixed" rot="R90">Designed by Alex Alberg</text>
 </plain>
 <libraries>
 <library name="memory_card">
