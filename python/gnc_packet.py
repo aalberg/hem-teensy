@@ -55,12 +55,11 @@ class PlayerUpdate:
       self.valid = False
     else:
       self.valid = True
-      (self.char_id, self.action_state, self.xpos, self.ypos, self.stocks, \
-       self.percent, self.shield_size, self.last_move_connected, \
-       self.combo_count, self.last_hit_by, self.jx, self.jy, self.cx, self.cy, \
-       self.trigger, self.buttons, self.phy_buttons, self.l, self.r) = \
+      (self.char_id, self.action_state, self.xpos, self.ypos, self.jx, self.jy,
+       self.cx, self.cy, self.trigger, self.buttons, self.percent, \
+       self.shield_size, self.last_move_connected, self.combo_count,\
+       self.last_hit_by, self.stocks, self.phy_buttons, self.l, self.r) = \
         struct.unpack(Packet.format_strings["player_update"], bytes)
-
   def __str__(self):
     return "PlayerUpdate " + str((self.char_id, self.xpos, self.ypos))
 
@@ -86,7 +85,7 @@ class Packet:
 
     # UPDATE packet.
     "update": ">iI",
-    "player_update": ">bhffbffbbbfffffIHff",
+    "player_update": ">bhfffffffIffbbbbHff",
 
     # END packet.
     "end": ">b",
