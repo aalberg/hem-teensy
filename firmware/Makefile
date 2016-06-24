@@ -42,13 +42,10 @@ OBJCOPY = $(TOOLPATH)/arm-none-eabi-objcopy
 SIZE = $(TOOLPATH)/arm-none-eabi-size
 OBJDUMP = $(TOOLPATH)/arm-none-eabi-objdump
 
-RM = rm -rf
-
 ## Build process
 
 OBJ := $(addprefix $(OBJDIR)/,$(notdir $(SRC:.c=.o)))
 OBJ += $(addprefix $(OBJDIR)/,$(notdir $(ASM:.s=.o)))
-
 
 all:: $(BINDIR)/$(PROJECT).hex
 
@@ -68,8 +65,8 @@ $(BINDIR)/$(PROJECT).elf: $(OBJ)
 cleanBuild: clean
 
 clean:
-	$(RM) $(BINDIR)
-	$(RM) $(OBJDIR)
+	find $(BINDIR) -type 'f' | grep -v "stable" | xargs rm
+	rm -rf $(OBJDIR)
 
 # Compilation
 $(OBJDIR)/%.o: $(SRCDIR)/%.c

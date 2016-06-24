@@ -19,12 +19,6 @@
 // Serial baud rate.
 #define SERIAL_BAUD (921600)
 
-// Packet ID codes for each type of packet.
-#define EVENT_GAME_START 0x37
-#define EVENT_UPDATE 0x38
-#define EVENT_GAME_END 0x39
-uint8 event_codes[256];
-
 // Buffer and pointer to working packet.
 Buffer buffer;
 Packet *cur_packet = 0;
@@ -45,14 +39,6 @@ void Init(void) {
   // Enable interrupts.
   enable_irq(IRQ(INT_PIT1));
   ENABLE_INTERRUPTS;
-  
-  // Event code setup. These codes are used to verify the packet size is
-  // is correct the packet type. These values could be replaced with functions
-  // To allow packets of different sizes, such as data for a variable number of
-  // players.
-  event_codes[EVENT_GAME_START] = 0xA;
-  event_codes[EVENT_UPDATE] = 0x7A;
-  event_codes[EVENT_GAME_END] = 0x1;
 }
 
 int main(void) {
@@ -67,15 +53,11 @@ int main(void) {
     // Pop a packet from the buffer.
     int ret = BufferStartPop(&buffer, &send_packet);
     if (ret == 0) {
-      // Verify the message has the correct length.
-      if (send_packet->size == event_codes[(int)send_packet->type]) {
-        ComputerChecksum(send_packet);
-        UARTWrite((char *)send_packet, send_packet->size + PACKET_HEADER_SIZE);
-        LedToggle(3);
-      // A byte was dropped somewhere.
-      } else {
-        LedOn(4);
-      }
+      // Add a checksum and send the packet.
+      ComputerChecksum(send_packet);
+      UARTWrite((char *)send_packet, send_packet->size + PACKET_HEADER_SIZE);
+      LedToggle(3);
+
       // Tell the buffer to free the space the packet was in.
       BufferFinishPop(&buffer);
     }
@@ -113,6 +95,12 @@ void PORTC_IRQHandler() {
 void SPI0_IRQHandler() {
   // Read a byte and put it in the packet.
   cur_packet->size ++;
+  // Keep from overflowing the packet.
+  if (cur_packet->size >= MAX_PACKET_DATA) {
+    char temp = SPI0_POPR;
+    LedOn(4);
+    return;
+  }
   // A bit of a hack. The first thing the Wii writes is the packet type,
   // immediately followed by the data. Since type comes directly before the
   // data in the struct, use the pointer to type as the base address.

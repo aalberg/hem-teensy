@@ -10,10 +10,10 @@
 
 #define BUFFER_SIZE (16)
 #define PACKET_HEADER_SIZE (6)
-#define MAX_PACKET_DATA (236)
+#define MAX_PACKET_DATA (250)
 
 // The order of this struct is used for the packet format. Do not change it
-// Unless you know what you're doing. Size: 242 bytes.
+// Unless you know what you're doing. Size: 256 bytes.
 typedef struct {
   char marker[2];
   int16 size;

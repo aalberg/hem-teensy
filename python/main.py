@@ -5,7 +5,7 @@ import memcard_driver
 
 def main():
   # Serial port may change each time the Teensy is plugged in.
-  driver = memcard_driver.MemCardDriver('COM5')
+  driver = memcard_driver.MemCardDriver('COM3')
   
   while 1:
     packet = driver.Pop()
