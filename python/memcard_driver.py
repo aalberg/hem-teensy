@@ -2,11 +2,12 @@
 # Packet streaming is done in a separate thread.
 # Written for Python 2.7, but may be possible to update to a newer version.
 
-import gnc_packet
 import serial
 import threading
-
 import Queue
+
+import packet.packet as packet
+import packet_factory
 
 class MemCardDriver:
   def __init__(self, port = ''):
@@ -50,18 +51,16 @@ class MemCardDriver:
         print 2, hex(ord(b))
         continue
         
-      # Read size and type
-      header = self.ser.read(gnc_packet.Packet.HEADER_SIZE)
-      (size, checksum, type) = gnc_packet.Packet.UnpackHeader(header)
-      if not gnc_packet.Packet.VerifyPacketType(type, size):
-        continue
+      # Read packet header
+      header_raw = self.ser.read(packet.PacketHeader.SIZE)
+      header = packet.PacketHeader(header_raw)
       
       # Read data, parse into packet
-      data = self.ser.read(size)
-      packet = gnc_packet.Packet(type, size, checksum, data)
+      data = self.ser.read(header.size)
+      packet_inst = packet_factory.PacketFactory.Create(header, data)
       # Put in queue for higher level interface
-      if not packet.type == gnc_packet.PacketType.INVALID:
-        self.queue.put(packet)
+      if not packet_inst == None and not packet_inst.type == packet.PacketType.INVALID:
+        self.queue.put(packet_inst)
       else:
         print "Got an invalid packet"
   

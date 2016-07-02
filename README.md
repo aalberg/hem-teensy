@@ -1,4 +1,5 @@
 # hem-teensy
+
 Hardware enhanced melee using a teensy 3.x and python 2.7.
 
 Game state data can be streamed from the console to a computer in real time.
@@ -24,6 +25,7 @@ Other helpful things:
 ## Getting Started
 
 ### Setting up the Console
+
 There are several methods of setting the console up to run the appropriate
 assembly code in the game.
 
@@ -37,6 +39,7 @@ into the game. See
 for more info.
 
 ### Setting up the Circuit
+
 ![Circuit diagram](images/circuit.png)
 
 The above image shows the the wiring of the entire circuit. The pinout for the
@@ -66,6 +69,7 @@ fit in the shell with the screws in.
 ![Memory card](images/memcard.jpg)
 
 ### Setting up the Teensy
+
 A prebuilt binary for the Teensy is located in `firmware/bin/stable`
 
 The firmware can be loaded onto the teensy using `util/teensy.exe`.
@@ -74,6 +78,7 @@ with the util program, click program, and click reboot. The teensy should
 reboot and start running the firmware.
 
 ### Setting up the Python script
+
 The python demo script requires [Python 2.7](https://www.python.org/download/releases/2.7/) and
 [pyserial](https://github.com/pyserial/pyserial) to run.
 
@@ -87,6 +92,7 @@ and python script (memcard_driver.py)
 
 ## Making Modifications
 ### Ditching the microUSB cable
+
 Note: I haven't tried this personally, but there isn't any reason why it
 shouldn't work. Attempt at your own risk.
 
@@ -97,6 +103,7 @@ the Uart<->Usb cable could be connected to the Vin pin on the Teensy to power
 it.
 
 ### Rebuilding the Firmware
+
 Quick note: This guide assumes Windows, but most of the steps probably work on
 a Linux distribution (make would already be installed, and there is a different
 installer for Teensyduino, but the toolchain should end up in the same place)
@@ -119,8 +126,7 @@ Changing the data written out the memory card slot is possible, but requires
 changing a bunch of pieces of the system:
 * The asm must be updated to write the new data
 * The gecko code must be regenerated from the asm, possibly with the injection point changed (WiiRd works for this)
-* The firmware must be updated with the new packet sizes and packet types
-* The python must be updated with the same packet sizes and types, and the struct unpacking strings must also be updated
+* [The python must be updated](python/README.md)
 
 A future update will add the ability to add new packet types in one place, but
 probably not for a while.
