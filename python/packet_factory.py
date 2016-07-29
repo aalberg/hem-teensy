@@ -18,5 +18,6 @@ class PacketFactory:
   @staticmethod
   def Create(header, data):
     if not PacketFactory.factories.has_key(header.type):
+      print "Inavlid packet type:", hex(header.type)
       return None
     return PacketFactory.factories[header.type](header, data)

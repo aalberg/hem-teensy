@@ -2,6 +2,9 @@
 
 import struct
 
+def HexString(str):
+  return ' '.join(format(ord(n),'02x') for n in str)
+
 # Enum for packet type
 class PacketType:
   UNSET = 0
@@ -14,13 +17,19 @@ class PacketType:
 class PacketHeader:
   SIZE = 4
   UNPACK_STRING = "<hBB"
-  
+
   def __init__(self, data):
     if not len(data) == PacketHeader.SIZE:
       self.valid = False
       self.size = 0
       return
     (self.size, self.checksum, self.type) = struct.unpack(PacketHeader.UNPACK_STRING, data)
+
+  def __str__(self):
+    return str((self.size, self.checksum, self.type))
+
+  def __repr__(self):
+    return self.__str__()
 
 # Base Packet class. All other packet types must inherit from this.
 class Packet:
@@ -61,7 +70,7 @@ class Packet:
   # Returns True if the unpack operation succeeds, and False otherwise.
   def UnpackData(self, data):
     return False
-    
+
   # Simple string representations.
   def __str__(self):
     if self.type == PacketType.INVALID:
