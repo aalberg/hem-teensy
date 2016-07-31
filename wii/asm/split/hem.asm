@@ -24,7 +24,7 @@ stw r31,0x1C(r1)
 stw r30,0x18(r1)
 stw r29,0x14(r1)
 
-# Check if there are 3 or more players, skip sending any packet if so.
+# Check if there are 5 or more players, skip sending any packet if so.
 lis r3,0x8016 # Load and call CountPlayers function.
 ori r3,r3,0xB558
 mtlr r3
