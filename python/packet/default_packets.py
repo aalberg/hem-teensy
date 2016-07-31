@@ -17,25 +17,25 @@ import packet
 # 2 bytes stage id
 # 4 bytes repeated player params
 class StartPacket(packet.Packet):
-  HEADER_SIZE = 2
-  UNPACK_STRING = ">h"
+  HEADER_SIZE = 3
+  UNPACK_STRING = ">hb"
 
   def VerifySize(self, size):
     return size > PlayerParams.SIZE and size % PlayerParams.SIZE == StartPacket.HEADER_SIZE
 
   def UnpackData(self, data):
     # Extract stage.
-    self.stage = struct.unpack(StartPacket.UNPACK_STRING,
-                               data[0:StartPacket.HEADER_SIZE])[0]
+    (self.stage, self.num_params) = struct.unpack(StartPacket.UNPACK_STRING,
+                                                  data[0:StartPacket.HEADER_SIZE])
 
     # Extract player params.
     offset = StartPacket.HEADER_SIZE
     num_param_bytes = len(data) - offset
-    if not num_param_bytes % PlayerParams.SIZE == 0:
+    if not num_param_bytes == PlayerParams.SIZE * self.num_params:
       print "Invalid number of bytes for player params", num_param_bytes, PlayerParams.SIZE
       return False
     self.player_params = []
-    for i in xrange(0, int(num_param_bytes / PlayerParams.SIZE)):
+    for i in xrange(0, self.num_params):
       params = PlayerParams(data[offset + PlayerParams.SIZE*i:
                                  offset + PlayerParams.SIZE*(i+1)])
       if params.valid:
@@ -74,25 +74,25 @@ class PlayerParams:
 # 4 bytes rng seed
 # 57 bytes repeated player update
 class UpdatePacket(packet.Packet):
-  HEADER_SIZE = 8
-  UNPACK_STRING = ">iI"
+  HEADER_SIZE = 9
+  UNPACK_STRING = ">iIb"
 
   def VerifySize(self, size):
     return size > PlayerUpdate.SIZE and size % PlayerUpdate.SIZE == UpdatePacket.HEADER_SIZE
 
   def UnpackData(self, data):
     # Extract frame count and rng seed.
-    (self.frame_count, self.rng_seed) = struct.unpack(UpdatePacket.UNPACK_STRING,
-                                                      data[0:UpdatePacket.HEADER_SIZE])
+    (self.frame_count, self.rng_seed, self.num_updates) = \
+        struct.unpack(UpdatePacket.UNPACK_STRING, data[0:UpdatePacket.HEADER_SIZE])
 
     # Extract player params.
     offset = UpdatePacket.HEADER_SIZE
     num_update_bytes = len(data) - offset
-    if not num_update_bytes % PlayerUpdate.SIZE == 0:
+    if not num_update_bytes == PlayerUpdate.SIZE * self.num_updates:
       print "Invalid number of bytes for player updates", num_update_bytes, PlayerUpdate.SIZE
       return False
     self.player_updates = []
-    for i in xrange(0, int(num_update_bytes / PlayerUpdate.SIZE)):
+    for i in xrange(0, self.num_updates):
       update = PlayerUpdate(data[offset + PlayerUpdate.SIZE*i:
                                  offset + PlayerUpdate.SIZE*(i+1)])
       if update.valid:

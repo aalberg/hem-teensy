@@ -53,6 +53,8 @@ int main(void) {
     // Pop a packet from the buffer.
     int ret = BufferStartPop(&buffer, &send_packet);
     if (ret == 0) {
+      // TODO: figure out why this byte is getting overwritten.
+      send_packet->marker[0] = 0xAA;
       // Add a checksum and send the packet.
       ComputerChecksum(send_packet);
       UARTWrite((char *)send_packet, send_packet->size + PACKET_HEADER_SIZE);
@@ -93,20 +95,20 @@ void PORTC_IRQHandler() {
 
 // SPI interrupt handler for receiving data.
 void SPI0_IRQHandler() {
-  // Read a byte and put it in the packet.
-  cur_packet->size ++;
-  // Keep from overflowing the packet.
-  if (cur_packet->size >= MAX_PACKET_DATA) {
-    char temp = SPI0_POPR;
+  // Keep from overflowing the packet. Drop any extra data.
+  if (cur_packet->size < MAX_PACKET_DATA - 2) {
+    // Read a byte and put it in the packet.
+    cur_packet->size ++;
+    // A bit of a hack. The first thing the Wii writes is the packet type,
+    // immediately followed by the data. Since type comes directly before the
+    // data in the struct, use the pointer to type as the base address.
+    *(&cur_packet->type + cur_packet->size) = SPI0_POPR;
+    LedToggle(2);
+  } else {
+    // Something is wrong with the asm.
     LedOn(4);
-    return;
   }
-  // A bit of a hack. The first thing the Wii writes is the packet type,
-  // immediately followed by the data. Since type comes directly before the
-  // data in the struct, use the pointer to type as the base address.
-  *(&cur_packet->type + cur_packet->size) = SPI0_POPR;
-  LedToggle(2);
-  
+
   // Reset the interrupt flag.
   SPI0_SR |= SPI_SR_RFDF_MASK;
 }

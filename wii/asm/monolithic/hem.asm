@@ -9,6 +9,9 @@
 # Unsure what the inject target function does exactly but it ends up calling the stock subtraction
 # instructions. It is called once per frame per character. It is also called during the score
 # screen. The replaced code line is executed at the end of this function.
+# 
+# The injected asm is put at the end of the function, and doesn't use any of the volatiles registers
+# before returning. r3-r12 should be safe to use.
 #***************************************************************************
 
 #***************************************************************************
@@ -31,6 +34,7 @@ mtlr r3
 blrl
 cmpwi r3,5 # Check if there are 3 or more players, and skip everything if so.
 bge- CLEANUP
+mr r9, r3 # Copy the number of players to r9 so we don't have to calculate it later.
 
 # Check if r5 contains a pointer to the last player in the game. If not, don't run this function,
 # since we don't want to send data more than once per frame.
@@ -93,8 +97,10 @@ ori r31, r31, 0xAC4C
 lhz r3, 0x1A(r31) # Dereference the stage ID.
 bl sendHalfExi
 
-li r30, 0 # Loop variable, player index.
+mr r3, r9 # Send the number of player params.
+bl sendByteExi
 
+li r30, 0 # Loop variable, player index.
 MP_WRITE_PLAYER:
 # Load the character data pointer for the current player.
 lis r3, 0x8045
@@ -137,8 +143,8 @@ b CLEANUP
 ON_END_EVENT:
 bl startExiTransfer # Load and call startExiTransfer function.
 
-li r3, 0x39
-bl sendByteExi # Send the END packet code.
+li r3, 0x39 # Send the END packet code.
+bl sendByteExi
 
 # Send the win condition byte. This byte will be 0 on ragequit, 3 on win by stock loss.
 lis r3, 0x8047
@@ -179,8 +185,10 @@ lis r3,0x804D
 lwz r3,0x5F90(r3) # RNG seed.
 bl sendWordExi
 
-li r30, 0 # Loop variable, player index.
+mr r3, r9 # Send the number of player params.
+bl sendByteExi
 
+li r30, 0 # Loop variable, player index.
 FU_WRITE_PLAYER:
 # Load the character data pointer for the current player.
 lis r3, 0x8045
@@ -270,6 +278,7 @@ b CLEANUP
 # subroutine: startExiTransfer
 # description: prepares port B exi to be written to
 #***************************************************************************
+startExiTransfer:
 lis r11, 0xCC00 # top bytes of address of EXI registers
 
 # disable read/write protection on memory pages
@@ -289,6 +298,7 @@ blr
 # inputs: r3 byte to send
 # outputs: r3 received byte
 #***************************************************************************
+sendByteExi:
 lis r11, 0xCC00 # top bytes of address of EXI registers
 li r10, 0x9 # bit pattern to write to control register to write one byte
 
@@ -315,6 +325,7 @@ blr
 # inputs: r3 bytes to send
 # outputs: r3 received bytes
 #***************************************************************************
+sendHalfExi:
 lis r11, 0xCC00 # top bytes of address of EXI registers
 li r10, 0x19 # bit pattern to write to control register to write one byte
 
@@ -341,6 +352,7 @@ blr
 # inputs: r3 word to send
 # outputs: r3 received word
 #***************************************************************************
+sendWordExi:
 lis r11, 0xCC00 # top bytes of address of EXI registers
 li r10, 0x39 # bit pattern to write to control register to write four bytes
 
@@ -363,6 +375,7 @@ blr
 # subroutine: endExiTransfer
 # description: stops port B writes
 #***************************************************************************
+endExiTransfer:
 lis r11, 0xCC00 # top bytes of address of EXI registers
 
 li r10, 0

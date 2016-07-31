@@ -33,6 +33,11 @@ class MemCardDriver:
     self.thread = threading.Thread(target = MemCardDriver.StreamingThread, args = (self,))
     self.thread.start()
   
+  def Read(self, size):
+    bytes = self.ser.read(size)
+    #print packet.HexString(bytes)
+    return bytes
+  
   # Thread to stream packets from the serial port to a queue.
   # The start of a packet is indicated by two bytes of 0xAA. This should hopefully
   # let the driver connet after the teensy is already returning data, but this
@@ -41,22 +46,22 @@ class MemCardDriver:
   def StreamingThread(self):
     while 1:
       # Read byte, compare to 0xAA
-      b = self.ser.read(1)
+      b = self.Read(1)
       if not b == '\xAA':
         print 1, hex(ord(b))
         continue
       # Read byte, compare to 0xAA
-      b = self.ser.read(1)
+      b = self.Read(1)
       if not b == '\xAA':
         print 2, hex(ord(b))
         continue
         
       # Read packet header
-      header_raw = self.ser.read(packet.PacketHeader.SIZE)
+      header_raw = self.Read(packet.PacketHeader.SIZE)
       header = packet.PacketHeader(header_raw)
       
       # Read data, parse into packet
-      data = self.ser.read(header.size)
+      data = self.Read(header.size)
       packet_inst = packet_factory.PacketFactory.Create(header, data)
       # Put in queue for higher level interface
       if not packet_inst == None and not packet_inst.type == packet.PacketType.INVALID:

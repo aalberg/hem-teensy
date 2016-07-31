@@ -63,7 +63,7 @@ class Packet:
       s += ord(c)
     if header.checksum == (s % 256):
       return True
-    print "Checksum mismatch. Expected", self.checksum, "calculated", s
+    print "Checksum mismatch. Expected", header.checksum, "calculated", s
     return False
 
   # Unpack the data into internal members. Placeholder function. Must be overidden by child class.
