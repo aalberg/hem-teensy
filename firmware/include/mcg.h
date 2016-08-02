@@ -1,10 +1,6 @@
 // Source: http://www.seanet.com/~karllunt/bareteensy31.html
-/*
- * File:    pll_init.h
- * Purpose: pll_driver specific declarations
- *
- * Notes:
- */
+// pll_driver specific declarations.
+
 #ifndef __MCG_H__
 #define __MCG_H__
 /********************************************************************/
@@ -49,15 +45,12 @@
 #define PBE  7
 #define PEE  8
 
-// IRC defines
+// IRC defines/
 #define SLOW_IRC 0
 #define FAST_IRC 1
 
-
 unsigned char fll_rtc_init(unsigned char, unsigned char);
 
-
-// prototypes
 void rtc_as_refclk(void);
 int fee_fei(int slow_irc_freq);
 int fei_fbe(int crystal_val, unsigned char hgo_val, unsigned char erefs_val);
@@ -82,7 +75,8 @@ int fei_fee(int crystal_val, unsigned char hgo_val, unsigned char erefs_val);
 int fee_fbi(int irc_freq, unsigned char irc_select);
 int fbe_blpe(int crystal_val);
 
-int pll_init(int crystal_val, unsigned char hgo_val, unsigned char erefs_val, signed char prdiv_val, signed char vdiv_val, unsigned char mcgout_select);
+int pll_init(int crystal_val, unsigned char hgo_val, unsigned char erefs_val, signed char prdiv_val,
+             signed char vdiv_val, unsigned char mcgout_select);
 
 int fll_freq(int fll_ref);
 unsigned char what_mcg_mode(void);
@@ -96,8 +90,4 @@ void clk_monitor_0(unsigned char en_dis);
 	void set_sys_dividers(uint32 outdiv1, uint32 outdiv2, uint32 outdiv3, uint32 outdiv4);
 #endif	
 
-
-
-
-/********************************************************************/
-#endif /* __MCG_H__ */
+#endif  // __MCG_H__
